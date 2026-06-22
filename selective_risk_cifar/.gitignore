@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Data / experiment outputs
+/data/
+data/
+/outputs/
+outputs/
+/runs/
+runs/
+/logs/
+logs/
+/checkpoints/
+checkpoints/
+/wandb/
+wandb/
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
+
+# Keep source/config/scripts/tests tracked.
+runs*/

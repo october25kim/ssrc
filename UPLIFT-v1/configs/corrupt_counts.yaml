@@ -1,0 +1,8 @@
+seed: 7
+num_classes: 10
+total_count: 10000
+clean_counts: [4200, 1800, 1200, 800, 600, 500, 350, 250, 200, 100]
+corruption:
+  gamma: 0.25
+  routing: head
+output_path: null

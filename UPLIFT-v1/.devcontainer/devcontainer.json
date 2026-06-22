@@ -1,0 +1,17 @@
+{
+  "name": "UPLIFT-U dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "uplift",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python3",
+        "python.analysis.extraPaths": [
+          "/workspace/src"
+        ]
+      }
+    }
+  }
+}

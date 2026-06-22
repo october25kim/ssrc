@@ -1,0 +1,15 @@
+.git
+.venv
+venv
+data
+outputs
+runs
+logs
+checkpoints
+wandb
+__pycache__
+*.pyc
+*.pt
+*.pth
+*.ckpt
+.DS_Store

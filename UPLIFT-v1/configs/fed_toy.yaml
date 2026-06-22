@@ -1,0 +1,12 @@
+seed: 13
+num_clients: 10
+num_classes: 10
+samples_per_client: 1000
+alpha: 2.0
+rho: 1.0
+corruption:
+  gamma_min: 0.15
+  gamma_max: 0.30
+  routing: head
+recovery:
+  kind: shared_r

@@ -1,0 +1,14 @@
+# Reference command arguments for CIFAR-10 symmetric 35% noise.
+dataset: cifar10
+noise_type: symmetric
+noise_rate: 0.35
+model: resnet18
+epochs: 120
+batch_size: 128
+lr: 0.1
+weight_decay: 0.0005
+trusted_prop_size: 2500
+trusted_cert_size: 2500
+scores: [msp, entropy, margin, energy]
+alphas: [0.05, 0.10]
+gammas: [0.5, 0.7, 1.0]

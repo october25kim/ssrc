@@ -1,0 +1,18 @@
+services:
+  srcc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: srcc:latest
+    working_dir: /workspace
+    ipc: host
+    shm_size: "16gb"
+    environment:
+      PYTHONPATH: /workspace
+      WANDB_DISABLED: "true"
+    volumes:
+      - ./:/workspace
+      - ./data:/data
+      - ./outputs:/outputs
+      - ./runs:/workspace/runs
+    command: bash

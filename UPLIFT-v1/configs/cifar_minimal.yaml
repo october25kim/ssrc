@@ -1,0 +1,18 @@
+seed: 19
+dataset: CIFAR10
+data_root: ./data
+known_classes: 6
+unknown_classes: 4
+num_clients: 10
+imbalance_ratio: 50
+unknown_contamination: 0.20
+routing: head
+known_train_total: 1800
+test_limit: 1800
+epochs: 3
+batch_size: 128
+lr: 0.001
+weight_decay: 0.0001
+methods: [CE, LA-Observed, LA-Recovered, LA-Oracle]
+logit_adjustment:
+  tau: 1.0
