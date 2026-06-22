@@ -13,7 +13,12 @@ fi
 
 mkdir -p data outputs runs logs checkpoints
 
-docker run --rm -it \
+TTY_ARGS=()
+if [[ -t 0 ]]; then
+  TTY_ARGS=(-it)
+fi
+
+docker run --rm "${TTY_ARGS[@]}" \
   "${GPU_ARGS[@]}" \
   --ipc=host \
   --shm-size=16g \

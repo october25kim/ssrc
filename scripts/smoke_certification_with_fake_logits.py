@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -8,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-RUN = ROOT / "runs" / "smoke_fake"
+RUN = Path(os.environ.get("SRCC_SMOKE_RUN", ROOT / "runs" / "smoke_fake_local"))
 RUN.mkdir(parents=True, exist_ok=True)
 
 rng = np.random.default_rng(0)

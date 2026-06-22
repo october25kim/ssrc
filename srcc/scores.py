@@ -18,7 +18,11 @@ def prediction(logits: np.ndarray) -> np.ndarray:
 
 
 def risk_scores(logits: np.ndarray, score_names: Iterable[str]) -> Dict[str, np.ndarray]:
-    """Compute risk scores where lower means safer/more acceptable."""
+    """Compute proposal scores.
+
+    Direction is handled by certification:
+    msp/margin accept high scores, entropy/energy accept low scores.
+    """
     logits = np.asarray(logits, dtype=np.float64)
     probs = probabilities(logits)
     score_names = list(score_names)
@@ -27,7 +31,7 @@ def risk_scores(logits: np.ndarray, score_names: Iterable[str]) -> Dict[str, np.
     if any(s in score_names for s in ["msp", "entropy", "margin"]):
         conf = probs.max(axis=1)
         if "msp" in score_names:
-            out["msp"] = 1.0 - conf
+            out["msp"] = conf
         if "entropy" in score_names:
             ent = -np.sum(probs * np.log(np.clip(probs, EPS, 1.0)), axis=1)
             out["entropy"] = ent / np.log(probs.shape[1])
@@ -38,7 +42,7 @@ def risk_scores(logits: np.ndarray, score_names: Iterable[str]) -> Dict[str, np.
             top1 = np.max(top2, axis=1)
             second = np.min(top2, axis=1)
             margin = top1 - second
-            out["margin"] = -margin
+            out["margin"] = margin
 
     if "energy" in score_names:
         # Energy score: lower is generally more ID/confident when defined as -logsumexp(logits).
