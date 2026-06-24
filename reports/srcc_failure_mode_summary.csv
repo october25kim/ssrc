@@ -1,0 +1,11 @@
+dataset,regime,noise_type,noise_rate,alpha,reason,count,seed_count,best_failed_score_name,best_failed_gamma,best_failed_cert_risk_ucb,best_failed_cert_coverage_lcb,best_failed_test_risk
+cifar10,asym20,asymmetric,0.2,0.05,high_cert_error_ucb,9,3,msp,1.0,0.0820532025630924,0.4247291885636531,0.0592721725866201
+cifar10,asym20,asymmetric,0.2,0.1,high_cert_error_ucb,3,3,msp,1.0,0.1228244127566729,0.6918413386365712,0.1030320044918585
+cifar10,clean,symmetric,0.0,0.05,high_cert_error_ucb,2,2,energy,1.0,0.051377959172236,0.998363602535883,0.052
+cifar10,sym35,symmetric,0.35,0.05,high_cert_error_ucb,9,3,margin,1.0,0.1055815382232475,0.1137112383450798,0.0631412786108918
+cifar10,sym35,symmetric,0.35,0.1,high_cert_error_ucb,8,3,msp,1.0,0.1279504500355885,0.425126805229417,0.1150998429436841
+cifar100,asym20,asymmetric,0.2,0.05,high_cert_error_ucb,8,3,entropy,1.0,0.0939062059418437,0.2547431060772127,0.0486111111111111
+cifar100,asym20,asymmetric,0.2,0.1,high_cert_error_ucb,4,3,msp,1.0,0.1306532189163945,0.4291037327015375,0.0987353006434435
+cifar100,sym35,symmetric,0.35,0.05,high_cert_error_ucb,8,3,margin,1.0,0.115969257723324,0.1301114725298218,0.0586132952108649
+cifar100,sym35,symmetric,0.35,0.05,insufficient_cert_n,1,1,entropy,0.5,0.0552792489552543,0.0221246270161536,0.019047619047619
+cifar100,sym35,symmetric,0.35,0.1,high_cert_error_ucb,7,3,msp,1.0,0.1481871262320718,0.2649108197753568,0.1111111111111111
