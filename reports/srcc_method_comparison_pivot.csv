@@ -1,0 +1,11 @@
+dataset,regime,alpha,clean_trained_upper_bound_mean_certified_coverage_all_seeds,full_coverage_mean_certified_coverage_all_seeds,ltt_bonferroni_mean_certified_coverage_all_seeds,naive_empirical_threshold_mean_certified_coverage_all_seeds,no_buffer_proposal_mean_certified_coverage_all_seeds,srcc_main_mean_certified_coverage_all_seeds,uncertified_empirical_threshold_mean_certified_coverage_all_seeds,clean_trained_upper_bound_n_seeds_certified,full_coverage_n_seeds_certified,ltt_bonferroni_n_seeds_certified,naive_empirical_threshold_n_seeds_certified,no_buffer_proposal_n_seeds_certified,srcc_main_n_seeds_certified,uncertified_empirical_threshold_n_seeds_certified
+cifar10,asym20,0.05,,0.0,0.0,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0
+cifar10,asym20,0.1,,0.0,0.5013375054389559,0.0,0.0,0.5143017331417302,0.0,,0.0,3.0,0.0,0.0,3.0,0.0
+cifar10,clean,0.05,0.9794419466886622,0.33293414158561335,0.9654645846167984,0.6630326984988518,0.32975317328094567,0.9794419466886622,0.6630326984988518,3.0,1.0,3.0,2.0,1.0,3.0,2.0
+cifar10,clean,0.1,0.9981036233451254,0.99880242475684,0.9960464409536964,0.9985695746483073,0.9981036233451254,0.9981036233451254,0.9985695746483073,3.0,3.0,3.0,3.0,3.0,3.0,3.0
+cifar10,sym35,0.05,,0.0,0.0,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0
+cifar10,sym35,0.1,,0.0,0.0,0.0,0.0,0.0338535998026107,0.0,,0.0,0.0,0.0,0.0,1.0,0.0
+cifar100,asym20,0.05,,0.0,0.0,0.0,0.0,0.04604929120902754,0.0,,0.0,0.0,0.0,0.0,1.0,0.0
+cifar100,asym20,0.1,,0.0,0.22537020550756778,0.1303079393571622,0.0,0.28190842394133503,0.1303079393571622,,0.0,3.0,1.0,0.0,3.0,1.0
+cifar100,sym35,0.05,,0.0,0.0,0.0,0.0,0.0,0.0,,0.0,0.0,0.0,0.0,0.0,0.0
+cifar100,sym35,0.1,,0.0,0.06399676451458776,0.0,0.0,0.0833035927606635,0.0,,0.0,2.0,0.0,0.0,2.0,0.0
