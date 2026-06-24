@@ -1,102 +1,217 @@
-# AGENTS.md
+# AGENTS.md — SRCC Journal Version
 
-Project-level instructions for Codex, Cursor, and other coding agents working on the **Selective Risk Control after Corrupted Training (SRCC)** repository.
+## Project
 
-## 0. Startup Rule
+This repository supports the journal paper:
 
-Before coding or editing:
+**Certifying Accepted Predictions of Classifiers Trained with Corrupted Labels**
 
-1. Read this `AGENTS.md`.
+Internal acronym:
+
+**SRCC — Selective Risk Certification after Corrupted Training**
+
+Primary target journal:
+
+- **Information Sciences**
+
+Secondary target journal:
+
+- **Neural Networks**
+
+This project is no longer AAAI-first. Use the journal framing: **accepted prediction certification**, **intelligent classifier reliability**, **trusted calibration**, and **finite-sample reliability**.
+
+## Startup rule
+
+Before diagnosing, coding, editing, or running experiments:
+
+1. Read `AGENTS.md`.
 2. Read `CLAUDE.md` if present.
-3. Summarize task-relevant constraints before acting:
-   - accepted selective risk is primary,
-   - the trusted clean set is for proposal/certification, not model repair,
-   - certification labels must be independent of the selected rule,
-   - test labels are evaluation-only,
-   - certified coverage, not raw accuracy, is the central metric,
-   - Docker/preflight/Git reproducibility matters,
-   - use minimal, testable changes.
+3. Summarize the active constraints before making changes.
 
-## 1. Project Object
+If any instruction still frames the project as AAAI-first, RC-OWPL, federated learning, pseudo-labeling, open-world SSL, or noisy-label robust training as the primary object, flag the mismatch and apply only a minimal instruction-file correction.
 
-Target venue: **AAAI 2027**.
+## Paper identity
 
-Core thesis:
+This is a post-hoc reliability certification paper.
 
-> SRCC studies classifiers trained on corrupted labels and asks which deployment predictions can be accepted with a finite-sample clean selective-risk certificate.
+Given a classifier already trained on corrupted labels, certify which deployment-time predictions can be accepted under clean labels using a small trusted calibration set.
 
-Main scientific object:
-
-> accepted prediction risk after corrupted training.
-
-Primary risk:
+Core accepted risk:
 
 ```text
-R_sel(h) = P( y_hat(X) != Y | A_h(X) = 1 )
+R_sel(h) = P(y_hat(X) != Y | A_h(X) = 1)
 ```
 
-Main objective:
+Goal:
 
 ```text
-maximize certified coverage subject to CP-UCB accepted-risk <= alpha
+R_sel(h) <= alpha
 ```
 
-Main scope:
+while maintaining nontrivial certified accepted coverage.
 
-- CIFAR-10 / CIFAR-100 corrupted-label training,
-- symmetric and asymmetric label noise,
-- frozen corrupted-trained classifier,
-- trusted clean proposal split,
-- independent trusted clean certification split,
-- Clopper-Pearson accepted-risk certification,
-- certified coverage reporting,
-- risk-buffered proposal with gamma in {0.5, 0.7, 1.0}.
+## Not this project
 
-Do **not** turn this project into RC-OWPL, federated learning, open-world pseudo-labeling, long-tail noisy learning, generic confidence calibration, benchmark construction, or theorem-heavy calibration without experiments.
+Do not treat this as:
 
-## 2. Agent Role
+- noisy-label robust training,
+- pseudo-labeling,
+- RC-OWPL,
+- federated learning,
+- generic calibration,
+- generic uncertainty thresholding.
 
-You are a senior ML research coding agent.
+Training repair is not the main contribution. Trusted clean data is used for proposal and certification, not for model repair unless running an explicitly labeled baseline.
 
-Responsibilities:
+## Journal framing
 
-- implement runnable experiment code,
-- preserve the SRCC scientific object,
-- keep accepted-risk and certified-coverage metrics first-class,
-- avoid leakage between train / proposal / certification / test splits,
-- keep Docker runs reproducible,
-- support fair score comparison under the same splits,
-- keep changes small, typed, tested, and ablation-friendly,
-- report actual command results.
+Prefer:
 
-You are not the research PM. Do not redefine the paper thesis.
+- accepted prediction certification,
+- post-hoc reliability certification,
+- corrupted-trained classifiers,
+- intelligent classifier reliability,
+- trusted calibration,
+- finite-sample accepted-risk certificate,
+- certified accepted coverage.
 
-## 3. Language and Style
+Use “risk control” mainly in technical sections.
 
-- Use English for code, comments, docstrings, variable names, config keys, filenames, and commit-style summaries.
-- Use Korean for human-facing reports unless asked otherwise.
-- Do not reveal hidden chain-of-thought.
-- Provide concise implementation summaries.
-- Use PyTorch, type hints, deterministic seeds, and simple functions.
-- Avoid hidden global state and heavy dependencies.
+## Core pipeline
 
-## 4. Core Implementation Invariant
+```text
+corrupted-trained classifier
+-> risk-buffered proposal
+-> independent certification
+-> certified accepted coverage
+```
 
-Every run must make available the following fields in machine-readable form, preferably CSV/JSON:
+The trusted clean set must be split into:
+
+```text
+C_prop
+C_cert
+```
+
+The test set is evaluation-only.
+
+Never use test labels for threshold, score, gamma, proposal, certification, or model selection.
+
+## Proposal logic
+
+For candidate selector `h` on proposal split:
+
+```text
+prop_n = number of accepted proposal examples
+prop_k = number of accepted proposal errors
+prop_risk = prop_k / prop_n
+prop_coverage = prop_n / m_prop
+```
+
+Risk-buffered proposal:
+
+```text
+prop_risk <= gamma * alpha
+```
+
+Default gamma values:
+
+```text
+0.5, 0.7, 1.0
+```
+
+`gamma = 1.0` is the no-buffer baseline.
+
+If `prop_n == 0`, do not treat `prop_risk` as zero. Zero-accept proposals must not win selection.
+
+## Certification logic
+
+On independent certification split:
+
+```text
+cert_n = number of accepted certification examples
+cert_k = number of accepted certification errors
+cert_risk_ucb = Clopper-Pearson UCB(cert_k, cert_n, delta_risk)
+cert_coverage_lcb = Clopper-Pearson LCB(cert_n, m_cert, delta_coverage)
+```
+
+Certification flag:
+
+```text
+certified = cert_n > 0 and cert_risk_ucb <= alpha
+```
+
+Certified accepted coverage:
+
+```text
+certified_coverage_at_alpha =
+    cert_coverage_lcb if certified else 0.0
+```
+
+If `cert_n == 0`:
+
+```text
+cert_risk_ucb = 1.0
+cert_coverage_lcb = 0.0
+certified = False
+certified_coverage_at_alpha = 0.0
+reason = "zero_cert_accepts"
+```
+
+Zero accepted samples are never success.
+
+## Delta accounting
+
+Preferred journal default:
+
+```text
+delta_total = 0.05
+delta_risk = delta_total / 2
+delta_coverage = delta_total / 2
+delta_allocation = "joint_split"
+```
+
+If legacy risk-only mode is used, record:
+
+```text
+delta_allocation = "risk_only_legacy"
+```
+
+## Multiple-row certificates
+
+No union penalty is valid only when a single selector is selected before certification.
+
+If multiple score/gamma rows are certified and then the best row is chosen using certification results, use simultaneous correction or mark certificates as marginal individual-row certificates.
+
+Required fields:
+
+```text
+certificate_scope
+n_certified_candidates
+```
+
+Allowed scopes:
+
+```text
+single_selector
+individual_row
+simultaneous_rows
+```
+
+## Required result schema
+
+Every certification result row should include:
 
 ```text
 dataset
 noise_type
 noise_rate
 seed
-model
-epochs
 alpha
-delta
 gamma
 score_name
 threshold
-certified
+threshold_direction
 prop_n
 prop_k
 prop_coverage
@@ -105,246 +220,148 @@ cert_n
 cert_k
 cert_risk_ucb
 cert_coverage_lcb
+certified
+certified_coverage_at_alpha
 test_coverage
 test_risk
-test_correct_count
-test_accepted_count
+delta_total
+delta_risk
+delta_coverage
+delta_allocation
+certificate_scope
+n_certified_candidates
+reason
 ```
 
-Accuracy alone is insufficient. The main table metric is:
+## Reason codes
 
-```text
-CertifiedCoverage@alpha = cert_coverage_lcb, among certified runs
-```
-
-If `cert_n == 0` or no candidate is certified, report coverage collapse explicitly. Do not let zero errors with zero accepted samples appear successful.
-
-## 5. SRCC Theory/Method Requirements
-
-The canonical method is:
-
-```text
-corrupted training -> score extraction -> risk-buffered proposal -> independent CP certification -> certified coverage report
-```
-
-Risk-buffered proposal:
-
-```text
-select h that maximizes proposal coverage subject to prop_risk <= gamma * alpha
-```
-
-Independent certification:
-
-```text
-certify selected h only on the certification split using Clopper-Pearson UCB
-```
-
-Allowed proposal scores:
-
-```text
-msp
-entropy
-margin
-energy
-```
-
-Optional only:
-
-```text
-T-matrix correction
-calibrated temperature scaling
-advanced OOD/energy variants
-```
-
-These optional scores must never be described as the source of the finite-sample guarantee. The guarantee comes from the independent certification split.
-
-## 6. Data and Split Rules
-
-The repository should maintain distinct roles:
-
-```text
-corrupted_train: used to train classifier with corrupted labels
-trusted_prop: clean labels allowed only for selecting score/threshold under gamma buffer
-trusted_cert: clean labels allowed only for final CP certification
-test: clean labels evaluation-only; never tune on test
-```
-
-Forbidden leakage:
-
-- using `trusted_cert` labels during proposal,
-- using test labels for threshold/score/gamma selection,
-- training the classifier on trusted proposal/certification/test labels,
-- silently changing splits between scores or baselines,
-- reporting the best test result as if it were certified.
-
-Allowed training signals:
-
-- corrupted labels in `corrupted_train`,
-- model logits,
-- model probabilities,
-- confidence,
-- entropy,
-- margin,
-- energy score.
-
-## 7. Evaluation Requirements
-
-Core evaluation must include:
+Use clear reason codes:
 
 ```text
 certified
-cert_risk_ucb
-cert_coverage_lcb
-cert_n
-cert_k
-prop_risk
-prop_coverage
-test_risk
-test_coverage
+no_proposal_candidate
+zero_prop_accepts
+zero_cert_accepts
+insufficient_cert_n
+high_cert_error_ucb
+not_certified
+invalid_split
+invalid_delta
+numerical_error
 ```
 
-Required sweeps:
+If `cert_k == 0` but `cert_risk_ucb > alpha`, prefer:
 
 ```text
-alpha in {0.05, 0.10}
-gamma in {0.5, 0.7, 1.0}
-scores in {msp, entropy, margin, energy}
+insufficient_cert_n
 ```
 
-Minimum AAAI PoC matrix:
+## Required tests
 
-```text
-cifar10 symmetric 0.35 seeds 0,1,2
-cifar10 asymmetric 0.20 seeds 0,1,2
-cifar100 symmetric 0.35 seeds 0,1,2
-```
+Maintain tests for:
 
-Pass/fail interpretation:
+- Clopper-Pearson risk UCB boundary cases,
+- Clopper-Pearson coverage LCB boundary cases,
+- zero accepted certification convention,
+- zero accepted proposal handling,
+- zero-error minimum accepted count,
+- gamma-buffer proposal logic,
+- certified coverage definition,
+- split separation,
+- multiple-row certificate scope.
 
-```text
-cert_coverage_lcb > 0.30 at alpha=0.05: strong
-0.15 <= cert_coverage_lcb <= 0.30 at alpha=0.05: usable
-only alpha=0.10 works: pragmatic safety framing
-near-zero certified coverage: do not pitch as certification success
-```
+## Lightweight verification
 
-## 8. Docker / Repository Discipline
-
-Repository is Docker-first.
-
-Rules:
-
-- outputs go under `outputs/` or `runs/`,
-- root `/data`, `/outputs`, `/runs`, `/logs`, `/checkpoints`, `/wandb` are not committed,
-- source under `srcc/`, `scripts/`, `configs/`, `tests/` must be tracked,
-- preflight should catch ignored/untracked source files,
-- Docker tests and smoke should pass before experiment expansion,
-- do not allow pip to overwrite CUDA-enabled torch in Docker.
-
-Preferred commands:
+Prefer Docker-first checks when available:
 
 ```bash
-bash scripts/docker_build.sh
 bash scripts/docker_test.sh
 bash scripts/docker_smoke.sh
+bash scripts/docker_cifar_smoke_train.sh
 ```
 
-Fallback if Docker is unavailable:
+Do not launch long CIFAR experiments unless explicitly requested.
 
-```bash
-PYTHONPATH=. python -m pytest -q
-python scripts/smoke_certification_with_fake_logits.py
-```
+## Experiment priorities
 
-## 9. Git Discipline
+Journal minimum:
 
-Start of day:
+1. CIFAR-10 clean.
+2. CIFAR-10 symmetric corruption.
+3. CIFAR-10 asymmetric corruption.
+4. Seeds 0, 1, 2.
+5. CIFAR-100 synthetic corruption.
+6. Score ablations: MSP, MaxLogit, margin, entropy, energy.
+7. Gamma ablations: 0.5, 0.7, 1.0.
+8. Baselines: full coverage, naive empirical threshold, no-buffer proposal, LTT/Bonferroni, clean-trained upper bound.
 
-```bash
-bash scripts/git_start_day.sh
-```
+Strong extensions:
 
-End of day:
+1. CIFAR-N or another real noisy-label benchmark.
+2. Temperature scaling + SRCC.
+3. GCE / Co-teaching / DivideMix + SRCC.
+4. Calibration size sensitivity.
+5. Failure mode heatmap.
 
-```bash
-bash scripts/git_end_day.sh "short, concrete commit message"
-```
+## Forbidden actions
 
-Daily Git expectations:
+Do not:
 
-1. Pull before starting work.
-2. Run at least Docker smoke or local smoke before committing.
-3. Commit source/config/script changes only.
-4. Do not commit data, CIFAR downloads, runs, checkpoints, logs, or wandb files.
-5. Pull with rebase before push.
-6. Report the pushed commit hash.
+- report accuracy as the main metric,
+- use test labels for proposal or certification,
+- mix proposal and certification splits,
+- count zero accepted samples as success,
+- hide coverage collapse,
+- overclaim from smoke runs,
+- present robust training as the main contribution,
+- make `T^{-T}` correction the main method,
+- perform unrelated refactors,
+- commit generated runs or large artifacts.
 
-## 10. Testing Requirements
-
-Use pytest. Tests should be CPU-fast with tiny synthetic data.
-
-Required coverage:
-
-- Clopper-Pearson UCB correctness,
-- certification split independence assumptions are respected by API,
-- risk-buffered proposal behavior,
-- empty accepted set handled as uncertified/collapse,
-- score functions return finite arrays,
-- smoke certification writes CSV/JSON results,
-- Docker smoke passes.
-
-## 11. Common Mistakes to Avoid
-
-Avoid:
-
-- optimizing only for accuracy,
-- reporting empirical test risk without certification,
-- using certification labels in proposal selection,
-- tuning gamma or score on test labels,
-- silently treating empty accepted set as success,
-- comparing scores on different splits,
-- changing config schemas silently,
-- refactoring unrelated files,
-- reformatting unrelated files,
-- adding heavy dependencies without approval,
-- making manuscript claims from smoke runs.
-
-## 12. Minimal-change Rule
-
-When editing:
-
-1. make the smallest change that solves the task,
-2. preserve existing APIs/config schema unless asked,
-3. add/update tests for changed behavior,
-4. run requested verification commands,
-5. report actual results,
-6. if a command fails, report exact error and likely cause.
-
-## 13. Reporting Format
-
-After coding, report:
+Do not commit:
 
 ```text
-수정 요약:
+runs/
+data/
+outputs/
+checkpoints/
+logs/
+wandb/
+*.pt
+*.pth
+*.npy
+*.npz
+```
+
+## Final report format
+
+```text
+Implementation summary:
 - ...
 
-변경한 파일:
+Files changed:
 - ...
 
-핵심 변경:
+Theory / journal-framing items preserved:
+- accepted prediction certification:
+- Information Sciences-first framing:
+- proposal/certification split:
+- CP risk UCB:
+- coverage LCB:
+- risk-buffered proposal:
+- zero-accept convention:
+- certified_coverage_at_alpha:
+- reason codes:
+
+Commands run:
 - ...
 
-검증 명령:
+Key outputs:
 - ...
 
-검증 결과:
+Known limitations:
 - ...
 
-남은 리스크:
+Next recommended action:
 - ...
-
-Git 상태:
-- branch:
-- commit:
-- pushed: yes/no
 ```
