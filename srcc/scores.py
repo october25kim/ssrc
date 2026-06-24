@@ -44,6 +44,9 @@ def risk_scores(logits: np.ndarray, score_names: Iterable[str]) -> Dict[str, np.
             margin = top1 - second
             out["margin"] = margin
 
+    if "maxlogit" in score_names:
+        out["maxlogit"] = logits.max(axis=1)
+
     if "energy" in score_names:
         # Energy score: lower is generally more ID/confident when defined as -logsumexp(logits).
         out["energy"] = -logsumexp(logits, axis=1)

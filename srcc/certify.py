@@ -10,6 +10,7 @@ from scipy.stats import beta
 
 THRESHOLD_DIRECTIONS: Dict[str, str] = {
     "msp": ">=",
+    "maxlogit": ">=",
     "margin": ">=",
     "entropy": "<=",
     "energy": "<=",

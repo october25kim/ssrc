@@ -286,14 +286,15 @@ Do not launch long CIFAR experiments unless explicitly requested.
 
 Journal minimum:
 
-1. CIFAR-10 clean.
-2. CIFAR-10 symmetric corruption.
-3. CIFAR-10 asymmetric corruption.
-4. Seeds 0, 1, 2.
-5. CIFAR-100 synthetic corruption.
-6. Score ablations: MSP, MaxLogit, margin, entropy, energy.
-7. Gamma ablations: 0.5, 0.7, 1.0.
-8. Baselines: full coverage, naive empirical threshold, no-buffer proposal, LTT/Bonferroni, clean-trained upper bound.
+1. Docker / smoke / fake-logit certification (`scripts/smoke_certification_with_fake_logits.py`, `scripts/docker_smoke.sh`).
+2. CIFAR-10 clean.
+3. CIFAR-10 symmetric corruption.
+4. CIFAR-10 asymmetric corruption.
+5. Seeds 0, 1, 2.
+6. CIFAR-100 synthetic corruption.
+7. Score ablations: MSP, MaxLogit, margin, entropy, energy.
+8. Gamma ablations: 0.5, 0.7, 1.0.
+9. Baselines: full coverage, naive empirical threshold, no-buffer proposal, LTT/Bonferroni, clean-trained upper bound.
 
 Strong extensions:
 

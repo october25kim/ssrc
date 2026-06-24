@@ -230,6 +230,7 @@ n_certified_candidates
 
 Minimum evidence:
 
+- Docker / smoke / fake-logit certification (`scripts/smoke_certification_with_fake_logits.py`, `scripts/docker_smoke.sh`),
 - CIFAR-10 clean,
 - CIFAR-10 symmetric corruption,
 - CIFAR-10 asymmetric corruption,
