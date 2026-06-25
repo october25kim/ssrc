@@ -1,0 +1,13 @@
+dataset,regime,alpha,feasibility_limit_label,note,baseline_failed_seed_count_clean_trained_upper_bound,baseline_failed_seed_count_full_coverage,baseline_failed_seed_count_ltt_bonferroni,baseline_failed_seed_count_naive_empirical_threshold,baseline_failed_seed_count_no_buffer_proposal,baseline_failed_seed_count_srcc_main,reason_failed_seed_count_high_cert_error_ucb,reason_failed_seed_count_insufficient_cert_n,test_looks_good_but_not_certified_count,coverage_collapse_count
+cifar10,asym20,0.05,alpha=0.05 corrupted feasibility limit,alpha=0.05 corrupted failures are feasibility limits; test metrics are diagnostic only,0,3,3,3,3,3,3,0,0,18
+cifar10,asym20,0.1,,failure counts are certification outcomes; test metrics are diagnostic only,0,3,0,3,3,0,3,0,0,12
+cifar10,clean,0.05,,failure counts are certification outcomes; test metrics are diagnostic only,0,2,0,1,2,0,2,0,0,6
+cifar10,clean,0.1,,failure counts are certification outcomes; test metrics are diagnostic only,0,0,0,0,0,0,0,0,0,0
+cifar10,sym35,0.05,alpha=0.05 corrupted feasibility limit,alpha=0.05 corrupted failures are feasibility limits; test metrics are diagnostic only,0,3,3,3,3,3,3,0,4,18
+cifar10,sym35,0.1,,failure counts are certification outcomes; test metrics are diagnostic only,0,3,3,3,3,2,3,0,4,17
+cifar100,asym20,0.05,alpha=0.05 corrupted feasibility limit,alpha=0.05 corrupted failures are feasibility limits; test metrics are diagnostic only,0,3,3,3,3,2,3,0,4,17
+cifar100,asym20,0.1,,failure counts are certification outcomes; test metrics are diagnostic only,0,3,0,2,3,0,3,0,3,10
+cifar100,clean,0.05,,failure counts are certification outcomes; test metrics are diagnostic only,0,3,0,3,3,0,3,0,3,12
+cifar100,clean,0.1,,failure counts are certification outcomes; test metrics are diagnostic only,0,3,0,3,3,0,3,0,3,12
+cifar100,sym35,0.05,alpha=0.05 corrupted feasibility limit,alpha=0.05 corrupted failures are feasibility limits; test metrics are diagnostic only,0,3,3,3,3,3,3,1,0,18
+cifar100,sym35,0.1,,failure counts are certification outcomes; test metrics are diagnostic only,0,3,1,3,3,1,3,0,4,14
