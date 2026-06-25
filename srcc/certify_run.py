@@ -196,7 +196,7 @@ def build_argparser() -> argparse.ArgumentParser:
     p.add_argument("--delta-coverage", type=float, default=None)
     p.add_argument("--delta-allocation", type=str, choices=["joint_split", "risk_only", "marginal"], default=None)
     p.add_argument("--gammas", type=float, nargs="+", default=[0.5, 0.7, 1.0])
-    p.add_argument("--scores", type=str, nargs="+", default=["msp", "entropy", "margin", "energy"])
+    p.add_argument("--scores", type=str, nargs="+", default=["msp", "entropy", "margin", "energy", "maxlogit"])
     p.add_argument("--num-thresholds", type=int, default=200)
     p.add_argument("--min-prop-accept", type=int, default=1)
     p.add_argument("--no-bonferroni-over-gammas", action="store_true")

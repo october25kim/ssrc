@@ -35,6 +35,14 @@ cifar100,asym20,0.1,full_coverage,0.3563210669843483,0.99880242475684,high_cert_
 cifar100,asym20,0.1,naive_empirical_threshold,0.1257363967583538,0.4338818297662484,high_cert_error_ucb,True,2
 cifar100,asym20,0.1,no_buffer_proposal,0.1306532189163945,0.4291037327015375,high_cert_error_ucb,True,3
 cifar100,asym20,0.1,uncertified_empirical_threshold,0.1257363967583538,0.4338818297662484,high_cert_error_ucb,True,2
+cifar100,clean,0.05,full_coverage,0.2422343014428472,0.99880242475684,high_cert_error_ucb,False,3
+cifar100,clean,0.05,naive_empirical_threshold,0.0683780024894926,0.588431858024107,high_cert_error_ucb,True,3
+cifar100,clean,0.05,no_buffer_proposal,0.0716379943166233,0.5836614848899104,high_cert_error_ucb,True,3
+cifar100,clean,0.05,uncertified_empirical_threshold,0.0683780024894926,0.588431858024107,high_cert_error_ucb,True,3
+cifar100,clean,0.1,full_coverage,0.2422343014428472,0.99880242475684,high_cert_error_ucb,False,3
+cifar100,clean,0.1,naive_empirical_threshold,0.1178179440452026,0.7328990626275687,high_cert_error_ucb,True,3
+cifar100,clean,0.1,no_buffer_proposal,0.1215086772821431,0.7285841210939821,high_cert_error_ucb,True,3
+cifar100,clean,0.1,uncertified_empirical_threshold,0.1178179440452026,0.7328990626275687,high_cert_error_ucb,True,3
 cifar100,sym35,0.05,full_coverage,0.4966464684565346,0.99880242475684,high_cert_error_ucb,False,3
 cifar100,sym35,0.05,ltt_bonferroni,0.519095200556104,0.9960464409536964,high_cert_error_ucb,False,3
 cifar100,sym35,0.05,naive_empirical_threshold,0.107623710566346,0.1333356453330409,high_cert_error_ucb,False,3

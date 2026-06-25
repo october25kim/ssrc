@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from argparse import Namespace
 import sys
 from pathlib import Path
 
@@ -14,11 +15,15 @@ import pytest
 
 from scripts.build_baseline_ablation_reports import (
     BASELINE_COLUMNS,
+    SCORES,
+    build_score_rows,
     full_coverage_row,
     ltt_bonferroni_row,
     naive_row,
     normalize_baseline_columns,
 )
+from srcc.certify import threshold_direction
+from srcc.certify_run import run as run_certify_run
 from srcc.scores import risk_scores
 
 
@@ -91,6 +96,64 @@ def test_maxlogit_score_is_raw_max_logit_and_high_direction():
     logits = np.array([[1.0, 3.0, -2.0], [4.0, 0.0, 2.0]])
     scores = risk_scores(logits, ["maxlogit"])
     assert np.allclose(scores["maxlogit"], np.array([3.0, 4.0]))
+    assert threshold_direction("maxlogit") == ">="
+
+
+def test_certify_run_accepts_maxlogit_score(tmp_path):
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    arrays = _arrays()
+    for name, value in arrays.items():
+        np.save(run_dir / f"{name}.npy", value)
+
+    run_certify_run(
+        Namespace(
+            run_dir=str(run_dir),
+            out_dir=None,
+            alpha=[0.1],
+            delta=0.05,
+            delta_total=None,
+            delta_risk=None,
+            delta_coverage=None,
+            delta_allocation=None,
+            gammas=[1.0],
+            scores=["maxlogit"],
+            num_thresholds=4,
+            min_prop_accept=1,
+            no_bonferroni_over_gammas=True,
+            output_json="certification_report.json",
+            output_csv="certification_results.csv",
+        )
+    )
+
+    df = pd.read_csv(run_dir / "certification_results.csv")
+    assert set(df["score_name"]) == {"maxlogit"}
+    assert set(df["threshold_direction"]) == {">="}
+
+
+def test_score_ablation_report_rows_include_maxlogit_when_arrays_available(tmp_path):
+    run_dir = tmp_path / "srcc_cifar10_clean_seed0"
+    run_dir.mkdir()
+    arrays = _arrays()
+    for name, value in arrays.items():
+        np.save(run_dir / f"{name}.npy", value)
+    existing = pd.DataFrame([
+        {
+            **_meta(),
+            "alpha": 0.1,
+            "gamma": 1.0,
+            "delta_total": 0.05,
+            "delta_risk": 0.05,
+            "delta_coverage": 0.05,
+            "delta_allocation": "risk_only_legacy",
+            "certified": False,
+        }
+    ])
+
+    rows = build_score_rows([(run_dir, existing)], num_thresholds=4)
+
+    assert set(rows["score_name"]) == set(SCORES)
+    assert "maxlogit" in set(rows["score_name"])
 
 
 def test_report_schema_and_certified_coverage_convention():
